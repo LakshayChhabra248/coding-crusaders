@@ -69,17 +69,30 @@ TEMPLATES = [
 WSGI_APPLICATION = 'crusaders_project.wsgi.application'
 
 # Database
-# Railway provides DATABASE_URL automatically - try multiple approaches to read it
+# Railway provides DATABASE_URL OR individual DB_* variables
 database_url = os.environ.get('DATABASE_URL')
 
 if database_url and 'postgres' in database_url.lower():
-    # Production: use PostgreSQL via Railway
+    # Production: use DATABASE_URL if available
     DATABASES = {
         'default': dj_database_url.config(
             default=database_url,
             conn_max_age=600,
             conn_health_checks=True,
         )
+    }
+elif os.environ.get('DB_ENGINE'):
+    # Production: use individual DB_* environment variables (Railway style)
+    DATABASES = {
+        'default': {
+            'ENGINE': os.environ.get('DB_ENGINE', 'django.db.backends.postgresql'),
+            'NAME': os.environ.get('DB_NAME', 'coding_crusaders_db'),
+            'USER': os.environ.get('DB_USER', 'postgres'),
+            'PASSWORD': os.environ.get('DB_PASSWORD', ''),
+            'HOST': os.environ.get('DB_HOST', 'localhost'),
+            'PORT': os.environ.get('DB_PORT', '5432'),
+            'CONN_MAX_AGE': 600,
+        }
     }
 else:
     # Development: use SQLite
