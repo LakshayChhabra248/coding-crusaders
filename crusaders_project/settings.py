@@ -69,24 +69,37 @@ TEMPLATES = [
 WSGI_APPLICATION = 'crusaders_project.wsgi.application'
 
 # Database
-# Use DB_* environment variables if available (Railway), otherwise fall back to SQLite
-if os.environ.get('DB_HOST') and os.environ.get('DB_HOST') != 'localhost':
-    # Production: use individual DB_* environment variables (Railway provides these)
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.environ.get('DB_NAME', 'postgres'),
-            'USER': os.environ.get('DB_USER', 'postgres'),
-            'PASSWORD': os.environ.get('DB_PASSWORD', ''),
-            'HOST': os.environ.get('DB_HOST', 'localhost'),
-            'PORT': os.environ.get('DB_PORT', '5432'),
-            'CONN_MAX_AGE': 600,
-            'CONNECT_TIMEOUT': 10,
-            'OPTIONS': {
-                'connect_timeout': 10,
+# Railway provides DB_* environment variables
+# Check if we're in production by looking for DB_HOST
+db_host = os.environ.get('DB_HOST', '')
+db_user = os.environ.get('DB_USER', '')
+db_password = os.environ.get('DB_PASSWORD', '')
+db_name = os.environ.get('DB_NAME', '')
+db_port = os.environ.get('DB_PORT', '5432')
+
+if db_host and db_user and db_password and db_name and db_host != 'localhost':
+    # Production: PostgreSQL via Railway
+    try:
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql',
+                'NAME': db_name,
+                'USER': db_user,
+                'PASSWORD': db_password,
+                'HOST': db_host,
+                'PORT': db_port,
+                'CONN_MAX_AGE': 600,
+                'CONNECT_TIMEOUT': 10,
             }
         }
-    }
+    except Exception as e:
+        # Fallback to SQLite if PostgreSQL config fails
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': BASE_DIR / 'db.sqlite3',
+            }
+        }
 else:
     # Development: use SQLite
     DATABASES = {
