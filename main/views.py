@@ -29,22 +29,22 @@ class SignupForm(UserCreationForm):
 def home(request):
     # Render the original single-page home (index.html) with all sections
     try:
-        team_members = TeamMember.objects.all().order_by('created_at')
+        team_members = list(TeamMember.objects.all().order_by('created_at'))
     except:
         team_members = []
     
     try:
-        projects = Project.objects.all().order_by('-created_at')[:8]
+        projects = list(Project.objects.all().order_by('-created_at')[:8])
     except:
         projects = []
     
     try:
-        achievements = Achievement.objects.all().order_by('-year')[:8]
+        achievements = list(Achievement.objects.all().order_by('-year')[:8])
     except:
         achievements = []
     
     try:
-        participations = Participation.objects.all().order_by('-year')[:8]
+        participations = list(Participation.objects.all().order_by('-year')[:8])
     except:
         participations = []
     
@@ -72,7 +72,7 @@ def about(request):
 
 def team(request):
     try:
-        team_members = TeamMember.objects.all().order_by('created_at')
+        team_members = list(TeamMember.objects.all().order_by('created_at'))
     except:
         team_members = []
     return render(request, 'team.html', {
@@ -85,7 +85,7 @@ def team(request):
 
 def projects(request):
     try:
-        projects = Project.objects.all().order_by('-created_at')
+        projects = list(Project.objects.all().order_by('-created_at'))
     except:
         projects = []
     return render(request, 'projects.html', {
@@ -116,11 +116,11 @@ def contact(request):
 
 def achievements(request):
     try:
-        achievements = Achievement.objects.all().order_by('-year')
+        achievements = list(Achievement.objects.all().order_by('-year'))
     except:
         achievements = []
     try:
-        participations = Participation.objects.all().order_by('-year')
+        participations = list(Participation.objects.all().order_by('-year'))
     except:
         participations = []
     return render(request, 'achievements.html', {
