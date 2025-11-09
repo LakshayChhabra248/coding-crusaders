@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -68,14 +69,17 @@ TEMPLATES = [
 WSGI_APPLICATION = 'crusaders_project.wsgi.application'
 
 # Database
-# Railway provides DATABASE_URL automatically
-import dj_database_url
-
+# Railway provides DATABASE_URL automatically - try multiple approaches to read it
 database_url = os.environ.get('DATABASE_URL')
-if database_url:
+
+if database_url and 'postgres' in database_url.lower():
     # Production: use PostgreSQL via Railway
     DATABASES = {
-        'default': dj_database_url.config(default=database_url, conn_max_age=600)
+        'default': dj_database_url.config(
+            default=database_url,
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
     }
 else:
     # Development: use SQLite
