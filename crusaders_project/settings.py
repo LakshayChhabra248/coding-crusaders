@@ -21,7 +21,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'main',
-    # 'django.contrib.sites',  # Temporarily disabled - will create table manually
+    'django.contrib.sites',
 ]
 
 # Third-party auth (django-allauth) - optional; install `django-allauth` to enable

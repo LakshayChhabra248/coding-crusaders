@@ -12,6 +12,7 @@ django.setup()
 try:
     call_command('migrate', '--noinput', verbosity=0)
     call_command('create_superuser', verbosity=0)
+    call_command('configure_socialapp', verbosity=0)
 except Exception as e:
     # Non-fatal - migrations might have already run
     pass
