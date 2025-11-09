@@ -69,15 +69,28 @@ TEMPLATES = [
 WSGI_APPLICATION = 'crusaders_project.wsgi.application'
 
 # Database
-# For now, use SQLite for production to get the site live quickly
-# This will work for content display; for production data persistence, 
-# we'll migrate to proper PostgreSQL setup later
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# Railway provides DATABASE_URL for PostgreSQL
+import dj_database_url
+
+database_url = os.environ.get('DATABASE_URL')
+
+if database_url:
+    # Production: use PostgreSQL via Railway
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=database_url,
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
     }
-}
+else:
+    # Development: use SQLite
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = []
