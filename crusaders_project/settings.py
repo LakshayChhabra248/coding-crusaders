@@ -69,7 +69,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'crusaders_project.wsgi.application'
 
 # Database
-# Railway provides DATABASE_URL for PostgreSQL
+# Use SQLite by default, PostgreSQL via Railway if DATABASE_URL exists
 import dj_database_url
 
 database_url = os.environ.get('DATABASE_URL')
@@ -84,7 +84,7 @@ if database_url:
         )
     }
 else:
-    # Development: use SQLite
+    # Development & Railway fallback: use SQLite
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
