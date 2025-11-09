@@ -215,25 +215,30 @@ def auth_login(request):
     if request.user.is_authenticated:
         return redirect('main:home')
 
+    # Try to handle login, but fail gracefully if auth tables don't exist
     form = EmailLoginForm(request.POST or None)
     error = None
+    
     if request.method == 'POST' and form.is_valid():
-        email = form.cleaned_data['email']
-        password = form.cleaned_data['password']
-        # try to find user by email
         try:
-            user = User.objects.get(email__iexact=email)
-            username = user.get_username()
-            user = authenticate(request, username=username, password=password)
-        except User.DoesNotExist:
-            # try authenticate using the provided value as username
-            user = authenticate(request, username=email, password=password)
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            # try to find user by email
+            try:
+                user = User.objects.get(email__iexact=email)
+                username = user.get_username()
+                user = authenticate(request, username=username, password=password)
+            except User.DoesNotExist:
+                # try authenticate using the provided value as username
+                user = authenticate(request, username=email, password=password)
 
-        if user is not None:
-            login(request, user)
-            return redirect('main:home')
-        else:
-            error = 'Invalid credentials'
+            if user is not None:
+                login(request, user)
+                return redirect('main:home')
+            else:
+                error = 'Invalid credentials'
+        except Exception as e:
+            error = 'Authentication system is currently unavailable. Please try again later.'
 
     return render(request, 'login.html', {
         'form': form,
@@ -250,19 +255,25 @@ def auth_signup(request):
         return redirect('main:home')
 
     form = SignupForm(request.POST or None)
+    error = None
+    
     if request.method == 'POST' and form.is_valid():
-        user = form.save(commit=False)
-        user.email = form.cleaned_data.get('email')
-        user.save()
-        # log the user in
-        raw_password = form.cleaned_data.get('password1')
-        user = authenticate(request, username=user.username, password=raw_password)
-        if user is not None:
-            login(request, user)
-            return redirect('main:home')
+        try:
+            user = form.save(commit=False)
+            user.email = form.cleaned_data.get('email')
+            user.save()
+            # log the user in
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(request, username=user.username, password=raw_password)
+            if user is not None:
+                login(request, user)
+                return redirect('main:home')
+        except Exception as e:
+            error = 'Signup system is currently unavailable. Please try again later.'
 
     return render(request, 'signup.html', {
         'form': form,
+        'error': error,
         'page_title': 'Sign Up - Coding Crusaders',
         'page_description': 'Create a new account with Coding Crusaders or sign up with Google.',
         'page_keywords': 'signup, register, create account, sign up',
