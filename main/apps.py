@@ -14,6 +14,8 @@ class MainConfig(AppConfig):
         try:
             from allauth.socialaccount.models import SocialApp
             from django.contrib.sites.models import Site
+            from django.db import connection
+            from django.db.utils import OperationalError
         except Exception:
             # allauth may not be installed or importable in some contexts
             return
@@ -26,26 +28,40 @@ class MainConfig(AppConfig):
             # nothing to do
             return
 
-        # Ensure site exists
-        site, _ = Site.objects.get_or_create(pk=1, defaults={'domain': domain, 'name': 'localhost'})
+        try:
+            # Check if database tables exist
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT 1 FROM django_site LIMIT 1")
+        except OperationalError:
+            # Database tables don't exist yet (migrations not run)
+            return
 
-        # Create or update Google SocialApp
-        app, created = SocialApp.objects.get_or_create(provider='google', defaults={
-            'name': 'Google',
-            'client_id': client_id,
-            'secret': client_secret,
-        })
-        if not created:
-            changed = False
-            if app.client_id != client_id:
-                app.client_id = client_id
-                changed = True
-            if app.secret != client_secret:
-                app.secret = client_secret
-                changed = True
-            if changed:
-                app.save()
+        try:
+            # Ensure site exists
+            site, _ = Site.objects.get_or_create(pk=1, defaults={'domain': domain, 'name': 'localhost'})
 
-        # Attach to site if not attached
-        if site not in app.sites.all():
-            app.sites.add(site)
+            # Create or update Google SocialApp
+            app, created = SocialApp.objects.get_or_create(provider='google', defaults={
+                'name': 'Google',
+                'client_id': client_id,
+                'secret': client_secret,
+            })
+            if not created:
+                changed = False
+                if app.client_id != client_id:
+                    app.client_id = client_id
+                    changed = True
+                if app.secret != client_secret:
+                    app.secret = client_secret
+                    changed = True
+                if changed:
+                    app.save()
+
+            # Attach to site if not attached
+            if site not in app.sites.all():
+                app.sites.add(site)
+        except Exception as e:
+            # If anything fails during setup, just log it and continue
+            print(f"Warning: Could not setup Google OAuth during app initialization: {e}")
+            pass
+
