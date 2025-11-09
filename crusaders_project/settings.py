@@ -69,29 +69,22 @@ TEMPLATES = [
 WSGI_APPLICATION = 'crusaders_project.wsgi.application'
 
 # Database
-# Railway provides DATABASE_URL OR individual DB_* variables
-database_url = os.environ.get('DATABASE_URL')
-
-# First priority: use DATABASE_URL if it exists and is PostgreSQL
-if database_url and ('postgres' in database_url.lower() or 'postgresql' in database_url.lower()):
-    DATABASES = {
-        'default': dj_database_url.config(
-            default=database_url,
-            conn_max_age=600,
-            conn_health_checks=True,
-        )
-    }
-# Second priority: construct from DB_* variables (but skip localhost)
-elif os.environ.get('DB_ENGINE') and os.environ.get('DB_HOST') and os.environ.get('DB_HOST') != 'localhost':
+# Use DB_* environment variables if available (Railway), otherwise fall back to SQLite
+if os.environ.get('DB_HOST') and os.environ.get('DB_HOST') != 'localhost':
+    # Production: use individual DB_* environment variables (Railway provides these)
     DATABASES = {
         'default': {
-            'ENGINE': os.environ.get('DB_ENGINE', 'django.db.backends.postgresql'),
-            'NAME': os.environ.get('DB_NAME', 'coding_crusaders_db'),
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.environ.get('DB_NAME', 'postgres'),
             'USER': os.environ.get('DB_USER', 'postgres'),
             'PASSWORD': os.environ.get('DB_PASSWORD', ''),
             'HOST': os.environ.get('DB_HOST', 'localhost'),
             'PORT': os.environ.get('DB_PORT', '5432'),
             'CONN_MAX_AGE': 600,
+            'CONNECT_TIMEOUT': 10,
+            'OPTIONS': {
+                'connect_timeout': 10,
+            }
         }
     }
 else:
