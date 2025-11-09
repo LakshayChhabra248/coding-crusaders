@@ -133,7 +133,10 @@ def achievements(request):
 
 
 def gallery_index(request):
-    sections = GallerySection.objects.prefetch_related('images').all()
+    try:
+        sections = list(GallerySection.objects.prefetch_related('images').all())
+    except:
+        sections = []
     return render(request, 'gallery_index.html', {
         'sections': sections,
         'page_title': 'Gallery - Coding Crusaders',
@@ -144,7 +147,10 @@ def gallery_index(request):
 
 def gallery_projects(request):
     # show projects with their images grouped
-    projects = Project.objects.prefetch_related('images').all()
+    try:
+        projects = list(Project.objects.prefetch_related('images').all())
+    except:
+        projects = []
     return render(request, 'gallery_projects.html', {
         'projects': projects,
         'page_title': 'Project Gallery - Coding Crusaders',
@@ -154,10 +160,20 @@ def gallery_projects(request):
 
 
 def gallery_section(request, slug):
-    section = GallerySection.objects.prefetch_related('images').filter(slug=slug).first()
+    try:
+        section = GallerySection.objects.prefetch_related('images').filter(slug=slug).first()
+        if section:
+            images = list(section.images.all())
+        else:
+            images = []
+            section = None
+    except:
+        section = None
+        images = []
+    
     if not section:
         return redirect('main:gallery_index')
-    images = section.images.all()
+    
     return render(request, 'gallery_section.html', {
         'section': section,
         'images': images,
