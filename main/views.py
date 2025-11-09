@@ -28,13 +28,26 @@ class SignupForm(UserCreationForm):
 
 def home(request):
     # Render the original single-page home (index.html) with all sections
-    team_members = TeamMember.objects.all().order_by('created_at')
-    projects = Project.objects.all().order_by('-created_at')[:8]
-    achievements = Achievement.objects.all().order_by('-year')[:8]
+    try:
+        team_members = TeamMember.objects.all().order_by('created_at')
+    except:
+        team_members = []
+    
+    try:
+        projects = Project.objects.all().order_by('-created_at')[:8]
+    except:
+        projects = []
+    
+    try:
+        achievements = Achievement.objects.all().order_by('-year')[:8]
+    except:
+        achievements = []
+    
     try:
         participations = Participation.objects.all().order_by('-year')[:8]
     except:
         participations = []
+    
     # show a quick success flag if contact was just submitted
     contact_sent = request.GET.get('contact') == '1'
     return render(request, 'index.html', {
@@ -58,7 +71,10 @@ def about(request):
 
 
 def team(request):
-    team_members = TeamMember.objects.all().order_by('created_at')
+    try:
+        team_members = TeamMember.objects.all().order_by('created_at')
+    except:
+        team_members = []
     return render(request, 'team.html', {
         'team_members': team_members,
         'page_title': 'Our Team - Coding Crusaders',
@@ -68,7 +84,10 @@ def team(request):
 
 
 def projects(request):
-    projects = Project.objects.all().order_by('-created_at')
+    try:
+        projects = Project.objects.all().order_by('-created_at')
+    except:
+        projects = []
     return render(request, 'projects.html', {
         'projects': projects,
         'page_title': 'Our Projects - Coding Crusaders Portfolio',
@@ -96,7 +115,10 @@ def contact(request):
 
 
 def achievements(request):
-    achievements = Achievement.objects.all().order_by('-year')
+    try:
+        achievements = Achievement.objects.all().order_by('-year')
+    except:
+        achievements = []
     try:
         participations = Participation.objects.all().order_by('-year')
     except:
