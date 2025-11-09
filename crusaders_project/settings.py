@@ -72,8 +72,8 @@ WSGI_APPLICATION = 'crusaders_project.wsgi.application'
 # Railway provides DATABASE_URL OR individual DB_* variables
 database_url = os.environ.get('DATABASE_URL')
 
-if database_url and 'postgres' in database_url.lower():
-    # Production: use DATABASE_URL if available
+# First priority: use DATABASE_URL if it exists and is PostgreSQL
+if database_url and ('postgres' in database_url.lower() or 'postgresql' in database_url.lower()):
     DATABASES = {
         'default': dj_database_url.config(
             default=database_url,
@@ -81,8 +81,8 @@ if database_url and 'postgres' in database_url.lower():
             conn_health_checks=True,
         )
     }
-elif os.environ.get('DB_ENGINE'):
-    # Production: use individual DB_* environment variables (Railway style)
+# Second priority: construct from DB_* variables (but skip localhost)
+elif os.environ.get('DB_ENGINE') and os.environ.get('DB_HOST') and os.environ.get('DB_HOST') != 'localhost':
     DATABASES = {
         'default': {
             'ENGINE': os.environ.get('DB_ENGINE', 'django.db.backends.postgresql'),
