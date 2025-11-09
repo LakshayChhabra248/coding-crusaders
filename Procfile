@@ -1,1 +1,1 @@
-web: python manage.py migrate && python manage.py collectstatic --noinput && gunicorn crusaders_project.wsgi --log-file -
+web: python manage.py migrate --settings=crusaders_project.settings_production && python manage.py collectstatic --noinput --settings=crusaders_project.settings_production && gunicorn crusaders_project.wsgi:application --log-file - --env DJANGO_SETTINGS_MODULE=crusaders_project.settings_production
