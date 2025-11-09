@@ -105,6 +105,25 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# CSRF and Security Settings
+CSRF_TRUSTED_ORIGINS = [
+    'https://coding-crusaders.me',
+    'https://www.coding-crusaders.me',
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+]
+
+CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_HTTPONLY = False  # Must be False for JavaScript to read CSRF token
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_HTTPONLY = True
+
+# Security headers
+SECURE_SSL_REDIRECT = False  # Railway handles SSL redirect
+SECURE_HSTS_SECONDS = 31536000
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
 # django-allauth settings (development-friendly defaults)
 SITE_ID = 1
 AUTHENTICATION_BACKENDS = (
