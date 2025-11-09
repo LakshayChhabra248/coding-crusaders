@@ -1,0 +1,301 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+  <section id="achievements" class="section">
+    <div class="container">
+      <div class="section-header">
+        <h1 class="section-title">Achievements & Participations</h1>
+        <p class="section-subtitle">Milestones and moments that define our journey</p>
+      </div>
+
+      <!-- Timeline View -->
+      <div class="timeline-container">
+        <!-- Participations Section -->
+        <div class="timeline-section">
+          <h2 class="timeline-heading">🏆 Participations</h2>
+          <div class="timeline">
+            {% for p in participations %}
+              <div class="timeline-item timeline-item-interactive">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content glass">
+                  <div class="timeline-year">{{ p.year }}</div>
+                  <h3 class="timeline-title">{{ p.event }}</h3>
+                  {% if p.note %}<p class="timeline-note">{{ p.note }}</p>{% endif %}
+                </div>
+              </div>
+            {% empty %}
+              <div class="empty-state">
+                <p>No participations recorded yet.</p>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Achievements Section -->
+        <div class="timeline-section">
+          <h2 class="timeline-heading">⭐ Achievements</h2>
+          <div class="timeline">
+            {% for a in achievements %}
+              <div class="timeline-item timeline-item-interactive">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content glass">
+                  <div class="timeline-year">{% if a.year %}{{ a.year }}{% else %}2024{% endif %}</div>
+                  <h3 class="timeline-title">{{ a.title }}</h3>
+                </div>
+              </div>
+            {% empty %}
+              <div class="empty-state">
+                <p>No achievements recorded yet.</p>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Summary -->
+      <div class="achievements-summary glass">
+        <div class="summary-stat">
+          <div class="summary-count">{{ participations|length }}</div>
+          <div class="summary-label">Participations</div>
+        </div>
+        <div class="summary-divider"></div>
+        <div class="summary-stat">
+          <div class="summary-count">{{ achievements|length }}</div>
+          <div class="summary-label">Achievements</div>
+        </div>
+      </div>
+
+      <!-- Call to Action -->
+      <div class="achievements-cta">
+        <h3>Interested in collaborating?</h3>
+        <p>Join us on our journey of innovation and excellence</p>
+        <a href="{% url 'main:contact' %}" class="btn primary">Let's Connect</a>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .section-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .section-title {
+      font-size: clamp(28px, 5vw, 48px);
+      margin: 0 0 12px 0;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .section-subtitle {
+      font-size: 16px;
+      color: rgba(230, 247, 255, 0.7);
+      margin: 0;
+    }
+
+    .timeline-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      margin-bottom: 60px;
+    }
+
+    .timeline-heading {
+      font-size: 20px;
+      margin-bottom: 32px;
+      color: var(--accent);
+    }
+
+    .timeline {
+      position: relative;
+      padding-left: 40px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 12px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, var(--accent), transparent);
+    }
+
+    .timeline-item {
+      margin-bottom: 32px;
+      position: relative;
+    }
+
+    .timeline-marker {
+      position: absolute;
+      left: -34px;
+      top: 8px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      box-shadow: 0 0 20px rgba(110, 231, 255, 0.4);
+      transition: all 0.3s ease;
+    }
+
+    .timeline-item-interactive:hover .timeline-marker {
+      width: 24px;
+      height: 24px;
+      left: -37px;
+      top: 4px;
+      box-shadow: 0 0 30px rgba(110, 231, 255, 0.6);
+    }
+
+    .timeline-content {
+      padding: 16px 20px;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .timeline-item-interactive:hover .timeline-content {
+      transform: translateX(8px);
+      box-shadow: 0 8px 30px rgba(110, 231, 255, 0.2);
+    }
+
+    .timeline-year {
+      font-size: 12px;
+      color: var(--accent);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+
+    .timeline-title {
+      font-size: 16px;
+      margin: 0 0 8px 0;
+      color: var(--text);
+    }
+
+    .timeline-note {
+      font-size: 13px;
+      color: rgba(230, 247, 255, 0.6);
+      margin: 0;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: rgba(230, 247, 255, 0.5);
+    }
+
+    .achievements-summary {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+      padding: 32px;
+      border-radius: 16px;
+      margin-bottom: 60px;
+      background: linear-gradient(135deg, rgba(110, 231, 255, 0.05), rgba(123, 97, 255, 0.03));
+    }
+
+    .summary-stat {
+      text-align: center;
+    }
+
+    .summary-count {
+      font-size: 36px;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .summary-label {
+      font-size: 12px;
+      color: rgba(230, 247, 255, 0.6);
+      margin-top: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .summary-divider {
+      width: 1px;
+      height: 60px;
+      background: linear-gradient(180deg, transparent, rgba(110, 231, 255, 0.2), transparent);
+    }
+
+    .achievements-cta {
+      text-align: center;
+      padding: 60px 40px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(123, 97, 255, 0.08), rgba(110, 231, 255, 0.06));
+      border: 1px solid rgba(110, 231, 255, 0.1);
+    }
+
+    .achievements-cta h3 {
+      font-size: 24px;
+      margin: 0 0 8px 0;
+      color: var(--text);
+    }
+
+    .achievements-cta p {
+      color: rgba(230, 247, 255, 0.7);
+      margin: 0 0 20px 0;
+    }
+
+    @media (max-width: 768px) {
+      .timeline-container {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .achievements-summary {
+        gap: 20px;
+      }
+
+      .summary-divider {
+        width: 40px;
+        height: 1px;
+      }
+    }
+  </style>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      gsap.registerPlugin(ScrollTrigger);
+
+      // Timeline items stagger animation on scroll
+      gsap.to('.timeline-item', {
+        scrollTrigger: {
+          trigger: '.timeline-container',
+          start: 'top 70%'
+        },
+        opacity: 1,
+        x: 0,
+        duration: 0.6,
+        stagger: 0.1,
+        ease: 'power2.out'
+      });
+
+      // Summary stats animation
+      const summaryStats = document.querySelectorAll('.summary-count');
+      summaryStats.forEach(stat => {
+        const finalValue = parseInt(stat.textContent);
+        
+        gsap.to(stat, {
+          scrollTrigger: {
+            trigger: '.achievements-summary',
+            start: 'top 80%',
+            once: true
+          },
+          textContent: finalValue,
+          duration: 2,
+          ease: 'power2.out',
+          onUpdate: function() {
+            stat.textContent = Math.ceil(parseFloat(stat.textContent));
+          }
+        });
+      });
+    });
+  </script>
+{% endblock %}

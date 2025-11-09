@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="auth-section container small">
+  <h1>Sign In Via {{ provider.name|default:'Provider' }}</h1>
+  <p>You are about to sign in using a third-party account from {{ provider.name|default:'the provider' }}.</p>
+  <form method="post" action="{{ process|default:request.path }}">
+    {% csrf_token %}
+    <button class="btn ghost" type="submit">Continue</button>
+  </form>
+</div>
+{% endblock %}

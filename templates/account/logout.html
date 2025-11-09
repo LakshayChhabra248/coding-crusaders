@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="auth-section container small">
+  {% if messages %}
+    <div class="messages">
+      {% for message in messages %}
+        <div class="message">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <h1>Sign Out</h1>
+  <p>Are you sure you want to sign out?</p>
+  <form method="post">
+    {% csrf_token %}
+    <button class="btn ghost" type="submit">Sign Out</button>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block content %}
+  <section id="projects" class="section">
+    <div class="container">
+      <div class="projects-section-intro">
+        <div>
+          <h2 style="margin:0">Projects</h2>
+          <p style="margin:6px 0 0;opacity:0.9">Selected work and major initiatives — highlights of what we've built.</p>
+        </div>
+        <div>
+          <a class="btn ghost" href="{% url 'main:gallery_index' %}">View Gallery</a>
+          <a class="btn primary" href="{% url 'main:projects' %}">All Projects</a>
+        </div>
+      </div>
+
+      {% if projects %}
+      <div class="projects-hero">
+        <div class="hero-card glass" id="featured-project-page" data-id="{{ projects.0.id }}" data-title="{{ projects.0.title|escapejs }}" data-desc="{{ projects.0.description|escapejs }}" data-link="{{ projects.0.link|default:'#' }}" data-img="{% if projects.0.images.all %}{{ projects.0.images.all.0.image.url }}{% endif %}">
+          {% with featured=projects.0 %}
+            {% if featured.images.all|length > 0 %}
+              <div style="display:flex;gap:12px;align-items:flex-start">
+                <img class="featured-img-page" src="{{ featured.images.all.0.image.url }}" alt="{{ featured.title }}" style="width:220px;height:140px;object-fit:cover;border-radius:8px;flex:0 0 auto" />
+                <div style="flex:1">
+                  <h3 class="featured-title-page">{{ featured.title }}</h3>
+                  <p class="lead featured-desc-page">{{ featured.description|default:"No description provided." }}</p>
+                </div>
+              </div>
+            {% else %}
+              <h3 class="featured-title-page">{{ featured.title }}</h3>
+              <p class="lead featured-desc-page">{{ featured.description|default:"No description provided." }}</p>
+            {% endif %}
+            <div class="hero-meta">
+              <div class="hero-cta"><a class="btn primary featured-cta-page" href="{{ featured.link|default:'#' }}" target="_blank">View Project</a></div>
+              <div style="margin-left:auto;opacity:0.9">Featured</div>
+            </div>
+          {% endwith %}
+        </div>
+
+        <div class="mini-list" id="mini-projects-page">
+          {% for p in projects|slice:"1:4" %}
+            <div class="project-card card-lg glass mini-project-page" tabindex="0" role="button" aria-pressed="false" data-id="{{ p.id }}" data-title="{{ p.title|escapejs }}" data-desc="{{ p.description|escapejs }}" data-link="{{ p.link|default:'#' }}" data-img="{% if p.images.all %}{{ p.images.all.0.image.url }}{% endif %}">
+              <div class="project-title mini-title-page">{{ p.title }}</div>
+              <div class="project-desc mini-desc-page">{{ p.description|truncatechars:120 }}</div>
+              <div class="project-tags"><span class="project-tag">Major</span><span class="project-tag">Team</span></div>
+              <button class="card-link" type="button" data-action="swap">Open</button>
+            </div>
+          {% empty %}
+            <div class="card glass">No additional projects.</div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="projects-grid">
+        {% for project in projects|slice:"4:24" %}
+          <div class="project-card glass">
+            <div class="project-title">{{ project.title }}</div>
+            <div class="project-desc">{{ project.description|truncatechars:140 }}</div>
+            <div class="project-tags"><span class="project-tag">Project</span></div>
+            <a class="card-link" href="{{ project.link|default:'#' }}" target="_blank">Open</a>
+          </div>
+        {% endfor %}
+      </div>
+      {% else %}
+        <div class="card glass">No projects added yet. Add projects in Studio.</div>
+      {% endif %}
+    </div>
+  </section>
+{% endblock %}

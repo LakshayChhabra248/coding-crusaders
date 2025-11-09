@@ -1,0 +1,14 @@
+{
+  "name": "coding-crusaders",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Frontend helper scripts for the Coding Crusaders Django project",
+  "scripts": {
+    "dev": "python manage.py runserver",
+    "start": "python manage.py runserver",
+    "build": "echo \"No build step defined. Add a build tool if needed.\"",
+    "test": "echo \"No tests defined\" && exit 0"
+  },
+  "author": "",
+  "license": "MIT"
+}

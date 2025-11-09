@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<main>
+  <section id="gallery" class="section gallery-section">
+    <div class="container">
+      <!-- Header -->
+      <div class="section-header">
+        <h1 class="gradient-title">Our Gallery</h1>
+        <p class="section-subtitle">Explore collections of our work, events, and creative moments. Click any collection to view images.</p>
+      </div>
+
+      <!-- Gallery Collections Grid -->
+      <div class="gallery-collections">
+        {% for section in sections %}
+        <a class="collection-card glass" href="{% url 'main:gallery_section' section.slug %}">
+          <div class="collection-preview">
+            {% with preview=section.images.first %}
+              {% if preview %}
+                <img class="gallery-preview" src="{{ preview.image.url }}" alt="{{ section.title }}">
+                <div class="collection-overlay">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </div>
+              {% else %}
+                <div class="collection-placeholder">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5">
+                    <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <path d="M21 15l-5-5L5 21"></path>
+                  </svg>
+                </div>
+              {% endif %}
+            {% endwith %}
+          </div>
+          
+          <div class="collection-info">
+            <h3 class="collection-title">{{ section.title }}</h3>
+            {% if section.description %}
+              <p class="collection-description">{{ section.description|truncatewords:15 }}</p>
+            {% endif %}
+            <div class="collection-meta">
+              <span class="image-count">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                  <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                  <path d="M21 15l-5-5L5 21"></path>
+                </svg>
+                {{ section.images.count }} image{{ section.images.count|pluralize }}
+              </span>
+              <span class="view-arrow">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="5" y1="12" x2="19" x2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </span>
+            </div>
+          </div>
+        </a>
+        {% empty %}
+        <div class="empty-state glass">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5">
+            <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+            <path d="M21 15l-5-5L5 21"></path>
+          </svg>
+          <h3>No gallery sections yet</h3>
+          <p>Add gallery sections and images in Studio or Admin</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}

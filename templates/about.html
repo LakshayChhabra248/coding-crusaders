@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+  <section id="about" class="section">
+    <div class="container">
+      <div class="section-header">
+        <h1 class="section-title">About Coding Crusaders</h1>
+        <p class="section-subtitle">Building Tomorrow's Solutions Today - Creating innovative, scalable solutions with precision and passion</p>
+      </div>
+
+      <!-- Hero Statement -->
+      <div class="about-hero glass">
+        <div class="hero-content">
+          <h2>We're a collective of developers and designers</h2>
+          <p>Dedicated to building digital experiences that captivate, engage, and delight. With a focus on cutting-edge design patterns, smooth animations, and thoughtful engineering, we transform ideas into reality.</p>
+        </div>
+      </div>
+
+      <!-- Three Pillars -->
+      <div class="pillars-grid">
+        <div class="pillar glass pillar-interactive">
+          <div class="pillar-icon">🎨</div>
+          <h3>Design First</h3>
+          <p>Beautiful, intuitive interfaces that prioritize user experience. Every pixel serves a purpose, every interaction tells a story.</p>
+        </div>
+        <div class="pillar glass pillar-interactive">
+          <div class="pillar-icon">✨</div>
+          <h3>Animation Driven</h3>
+          <p>Fluid motion and meaningful transitions that bring interfaces to life. GSAP-powered animations that feel natural and responsive.</p>
+        </div>
+        <div class="pillar glass pillar-interactive">
+          <div class="pillar-icon">⚡</div>
+          <h3>Performance Aware</h3>
+          <p>Fast, optimized, and scalable. We build with performance in mind, ensuring smooth experiences across all devices.</p>
+        </div>
+      </div>
+
+      <!-- Team Stats -->
+      <div class="about-stats">
+        <div class="stat-block glass stat-block-interactive">
+          <div class="stat-value">3</div>
+          <div class="stat-label">Team Members</div>
+          <p>Passionate developers and designers collaborating on innovative solutions.</p>
+        </div>
+        <div class="stat-block glass stat-block-interactive">
+          <div class="stat-value">50+</div>
+          <div class="stat-label">Projects Built</div>
+          <p>From concept to deployment, polished interactive web experiences.</p>
+        </div>
+        <div class="stat-block glass stat-block-interactive">
+          <div class="stat-value">10+</div>
+          <div class="stat-label">Years Experience</div>
+          <p>Combined expertise in web development, design, and animations.</p>
+        </div>
+      </div>
+
+      <!-- Core Values -->
+      <div class="values-section">
+        <h2>Our Core Values</h2>
+        <div class="values-grid">
+          <div class="value-card glass">
+            <h4>Innovation</h4>
+            <p>We push boundaries and explore new technologies to create next-generation experiences.</p>
+          </div>
+          <div class="value-card glass">
+            <h4>Quality</h4>
+            <p>Excellence in every detail. We believe that great products are built with attention and care.</p>
+          </div>
+          <div class="value-card glass">
+            <h4>Collaboration</h4>
+            <p>Great things happen when creative minds work together towards a common vision.</p>
+          </div>
+          <div class="value-card glass">
+            <h4>Impact</h4>
+            <p>We measure success by the real value we deliver to users and the world around us.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="about-cta">
+        <h3>Ready to collaborate?</h3>
+        <p>Let's build something extraordinary together</p>
+        <a href="{% url 'main:contact' %}" class="btn primary">Get in Touch</a>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Pillar hover effect
+      const pillars = document.querySelectorAll('.pillar-interactive');
+      pillars.forEach(pillar => {
+        pillar.addEventListener('mouseenter', function() {
+          gsap.to(this, { y: -8, duration: 0.3, ease: 'power2.out' });
+        });
+        pillar.addEventListener('mouseleave', function() {
+          gsap.to(this, { y: 0, duration: 0.3, ease: 'power2.out' });
+        });
+      });
+
+      // Stat block counter animation on scroll
+      const statBlocks = document.querySelectorAll('.stat-block-interactive .stat-value');
+      statBlocks.forEach(stat => {
+        const finalValue = parseInt(stat.textContent);
+        const suffix = stat.textContent.includes('+') ? '+' : '';
+        
+        gsap.registerPlugin(ScrollTrigger);
+        gsap.to(stat, {
+          scrollTrigger: {
+            trigger: stat,
+            start: 'top 80%',
+            once: true
+          },
+          textContent: finalValue,
+          duration: 2,
+          ease: 'power2.out',
+          onUpdate: function() {
+            stat.textContent = Math.ceil(parseFloat(stat.textContent)) + suffix;
+          }
+        });
+      });
+
+      // Value cards stagger animation
+      gsap.registerPlugin(ScrollTrigger);
+      gsap.to('.value-card', {
+        scrollTrigger: {
+          trigger: '.values-section',
+          start: 'top 70%'
+        },
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        stagger: 0.1,
+        ease: 'power2.out'
+      });
+    });
+  </script>
+{% endblock %}
