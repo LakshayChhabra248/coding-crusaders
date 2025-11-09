@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'replace-this-with-a-secure-secret-for-production')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True  # Temporarily enabled to see errors
+DEBUG = False
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
@@ -69,45 +69,15 @@ TEMPLATES = [
 WSGI_APPLICATION = 'crusaders_project.wsgi.application'
 
 # Database
-# Railway provides DB_* environment variables
-# Check if we're in production by looking for DB_HOST
-db_host = os.environ.get('DB_HOST', '')
-db_user = os.environ.get('DB_USER', '')
-db_password = os.environ.get('DB_PASSWORD', '')
-db_name = os.environ.get('DB_NAME', '')
-db_port = os.environ.get('DB_PORT', '5432')
-
-if db_host and db_user and db_password and db_name and db_host != 'localhost':
-    # Production: PostgreSQL via Railway
-    try:
-        DATABASES = {
-            'default': {
-                'ENGINE': 'django.db.backends.postgresql',
-                'NAME': db_name,
-                'USER': db_user,
-                'PASSWORD': db_password,
-                'HOST': db_host,
-                'PORT': db_port,
-                'CONN_MAX_AGE': 600,
-                'CONNECT_TIMEOUT': 10,
-            }
-        }
-    except Exception as e:
-        # Fallback to SQLite if PostgreSQL config fails
-        DATABASES = {
-            'default': {
-                'ENGINE': 'django.db.backends.sqlite3',
-                'NAME': BASE_DIR / 'db.sqlite3',
-            }
-        }
-else:
-    # Development: use SQLite
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
+# For now, use SQLite for production to get the site live quickly
+# This will work for content display; for production data persistence, 
+# we'll migrate to proper PostgreSQL setup later
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
+}
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = []
