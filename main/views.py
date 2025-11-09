@@ -31,7 +31,10 @@ def home(request):
     team_members = TeamMember.objects.all().order_by('created_at')
     projects = Project.objects.all().order_by('-created_at')[:8]
     achievements = Achievement.objects.all().order_by('-year')[:8]
-    participations = Participation.objects.all().order_by('-year')[:8]
+    try:
+        participations = Participation.objects.all().order_by('-year')[:8]
+    except:
+        participations = []
     # show a quick success flag if contact was just submitted
     contact_sent = request.GET.get('contact') == '1'
     return render(request, 'index.html', {
@@ -94,7 +97,10 @@ def contact(request):
 
 def achievements(request):
     achievements = Achievement.objects.all().order_by('-year')
-    participations = Participation.objects.all().order_by('-year')
+    try:
+        participations = Participation.objects.all().order_by('-year')
+    except:
+        participations = []
     return render(request, 'achievements.html', {
         'achievements': achievements,
         'participations': participations,
