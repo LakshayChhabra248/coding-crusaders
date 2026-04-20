@@ -2,6 +2,14 @@
   "version": 2,
   "builds": [
     {
+      "src": "static/(.*)",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "media/(.*)",
+      "use": "@vercel/static"
+    },
+    {
       "src": "crusaders_project/wsgi.py",
       "use": "@vercel/python"
     }
